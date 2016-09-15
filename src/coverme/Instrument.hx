@@ -53,7 +53,9 @@ class Instrument {
                 {expr: ETernary(econd, eif, eelse), pos: expr.pos};
 
             case EWhile(econd, ebody, normal):
-                econd = createBranchLog(instrumentExpr(econd));
+                econd = instrumentExpr(econd);
+                if (!econd.expr.match(EConst(CIdent("true" | "false")))) // TODO that doesn't feel right...
+                    econd = createBranchLog(econd);
                 ebody = instrumentExpr(blockExpr(ebody));
                 {expr: EWhile(econd, ebody, normal), pos: expr.pos};
 
