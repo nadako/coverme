@@ -8,6 +8,114 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
+var HtmlReport = function() { };
+$hxClasses["HtmlReport"] = HtmlReport;
+HtmlReport.__name__ = true;
+HtmlReport.report = function(coverage,out) {
+	var files = new haxe_ds_StringMap();
+	var getFileData = function(file) {
+		var data = __map_reserved[file] != null?files.getReserved(file):files.h[file];
+		if(data == null) {
+			var v = { branches : [], statements : []};
+			if(__map_reserved[file] != null) {
+				files.setReserved(file,v);
+			} else {
+				files.h[file] = v;
+			}
+			data = v;
+		}
+		return data;
+	};
+	var tmp = coverage.branches.iterator();
+	while(tmp.hasNext()) {
+		var branch = tmp.next();
+		getFileData(branch.pos.file).branches.push(branch);
+	}
+	var tmp1 = coverage.statements.iterator();
+	while(tmp1.hasNext()) {
+		var statement = tmp1.next();
+		getFileData(statement.pos.file).statements.push(statement);
+	}
+	var output = ["<style>\n.missing {\n    background-color: #fc8c84;\n}\n.missing:hover {\n    background-color: #82B8C0;\n}\n</style>"];
+	var tmp2 = files.keys();
+	while(tmp2.hasNext()) {
+		var file1 = tmp2.next();
+		output.push("<h1>" + file1 + "</h1>");
+		var content = js_node_Fs.readFileSync(file1,{ encoding : "utf8"});
+		var _g = [];
+		var _g2 = 0;
+		var _g1 = content.length;
+		while(_g2 < _g1) {
+			var c = content.charAt(_g2++);
+			c = StringTools.htmlEscape(c,true);
+			var _this_r = new RegExp("\r?\n","".split("u").join(""));
+			c = c.replace(_this_r,"<br/>\n");
+			c = StringTools.replace(c," ","&nbsp;");
+			c = StringTools.replace(c,"\t","&nbsp;&nbsp;&nbsp;&nbsp;");
+			_g.push(c);
+		}
+		var insertions = [new haxe_ds_IntMap()];
+		var insert = (function(insertions1) {
+			return function(pos,html) {
+				var ins = insertions1[0].h[pos];
+				if(ins == null) {
+					var v1 = [];
+					insertions1[0].h[pos] = v1;
+					ins = v1;
+				}
+				ins.push(html);
+			};
+		})(insertions);
+		var fileData = __map_reserved[file1] != null?files.getReserved(file1):files.h[file1];
+		var _g11 = 0;
+		var _g21 = fileData.branches;
+		while(_g11 < _g21.length) {
+			var branch1 = _g21[_g11];
+			++_g11;
+			var missing = [];
+			if(branch1.result.trueCount == 0) {
+				missing.push("true");
+			}
+			if(branch1.result.falseCount == 0) {
+				missing.push("false");
+			}
+			if(missing.length > 0) {
+				insert(branch1.pos.min,"<span class=\"missing\" title=\"path" + (missing.length > 1?"s":"") + " not taken: " + missing.join(", ") + "\">");
+				insert(branch1.pos.max,"</span>");
+			}
+		}
+		var _g12 = 0;
+		var _g22 = fileData.statements;
+		while(_g12 < _g22.length) {
+			var statement1 = _g22[_g12];
+			++_g12;
+			if(statement1.result == 0) {
+				insert(statement1.pos.min,"<span class=\"missing\" title=\"statement not executed\">");
+				insert(statement1.pos.max,"</span>");
+			}
+		}
+		var resultChars = [];
+		var _g23 = 0;
+		var _g13 = _g.length;
+		while(_g23 < _g13) {
+			var i = _g23++;
+			var ins1 = insertions[0].h[i];
+			if(ins1 != null) {
+				var _g3 = 0;
+				while(_g3 < ins1.length) {
+					var c1 = ins1[_g3];
+					++_g3;
+					resultChars.push(c1);
+				}
+			}
+			resultChars.push(_g[i]);
+		}
+		output.push("<code>");
+		output.push(resultChars.join(""));
+		output.push("</code>");
+	}
+	js_node_Fs.writeFileSync(out,output.join("\n"));
+};
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = true;
@@ -122,112 +230,12 @@ Main.__name__ = true;
 Main.main = function() {
 	new CoverTest().f(true);
 	coverme_Logger.logStatement(0);
-	while(false) {
+	var _g1 = 0;
+	while(_g1 < 5) {
+		++_g1;
+		coverme_Logger.logStatement(1);
 	}
-	var coverage = coverme_Logger.getCoverage();
-	var files = new haxe_ds_StringMap();
-	var getFileData = function(file) {
-		var data = __map_reserved[file] != null?files.getReserved(file):files.h[file];
-		if(data == null) {
-			var v = { branches : [], statements : []};
-			if(__map_reserved[file] != null) {
-				files.setReserved(file,v);
-			} else {
-				files.h[file] = v;
-			}
-			data = v;
-		}
-		return data;
-	};
-	var tmp = coverage.branches.iterator();
-	while(tmp.hasNext()) {
-		var branch = tmp.next();
-		getFileData(branch.pos.file).branches.push(branch);
-	}
-	var tmp1 = coverage.statements.iterator();
-	while(tmp1.hasNext()) {
-		var statement = tmp1.next();
-		getFileData(statement.pos.file).statements.push(statement);
-	}
-	var output = ["<style>\r\n.missing {\r\n    background-color: #fc8c84;\r\n}\r\n.missing:hover {\r\n    background-color: #82B8C0;\r\n}\r\n</style>"];
-	var tmp2 = files.keys();
-	while(tmp2.hasNext()) {
-		var file1 = tmp2.next();
-		output.push("<h1>" + file1 + "</h1>");
-		var content = js_node_Fs.readFileSync(file1,{ encoding : "utf8"});
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = content.length;
-		while(_g2 < _g1) {
-			var c = content.charAt(_g2++);
-			c = StringTools.htmlEscape(c,true);
-			var _this_r = new RegExp("\r?\n","".split("u").join(""));
-			c = c.replace(_this_r,"<br/>\n");
-			c = StringTools.replace(c," ","&nbsp;");
-			c = StringTools.replace(c,"\t","&nbsp;&nbsp;&nbsp;&nbsp;");
-			_g.push(c);
-		}
-		var insertions = [new haxe_ds_IntMap()];
-		var insert = (function(insertions1) {
-			return function(pos,html) {
-				var ins = insertions1[0].h[pos];
-				if(ins == null) {
-					var v1 = [];
-					insertions1[0].h[pos] = v1;
-					ins = v1;
-				}
-				ins.push(html);
-			};
-		})(insertions);
-		var fileData = __map_reserved[file1] != null?files.getReserved(file1):files.h[file1];
-		var _g11 = 0;
-		var _g21 = fileData.branches;
-		while(_g11 < _g21.length) {
-			var branch1 = _g21[_g11];
-			++_g11;
-			var missing = [];
-			if(branch1.result.trueCount == 0) {
-				missing.push("true");
-			}
-			if(branch1.result.falseCount == 0) {
-				missing.push("false");
-			}
-			if(missing.length > 0) {
-				insert(branch1.pos.min,"<span class=\"missing\" title=\"path" + (missing.length > 1?"s":"") + " not taken: " + missing.join(", ") + "\">");
-				insert(branch1.pos.max,"</span>");
-			}
-		}
-		var _g12 = 0;
-		var _g22 = fileData.statements;
-		while(_g12 < _g22.length) {
-			var statement1 = _g22[_g12];
-			++_g12;
-			if(statement1.result == 0) {
-				insert(statement1.pos.min,"<span class=\"missing\" title=\"statement not executed\">");
-				insert(statement1.pos.max,"</span>");
-			}
-		}
-		var resultChars = [];
-		var _g23 = 0;
-		var _g13 = _g.length;
-		while(_g23 < _g13) {
-			var i = _g23++;
-			var ins1 = insertions[0].h[i];
-			if(ins1 != null) {
-				var _g3 = 0;
-				while(_g3 < ins1.length) {
-					var c1 = ins1[_g3];
-					++_g3;
-					resultChars.push(c1);
-				}
-			}
-			resultChars.push(_g[i]);
-		}
-		output.push("<code>");
-		output.push(resultChars.join(""));
-		output.push("</code>");
-	}
-	js_node_Fs.writeFileSync("coverage.html",output.join("\n"));
+	HtmlReport.report(coverme_Logger.getCoverage(),"coverage.html");
 };
 Math.__name__ = true;
 var Reflect = function() { };
@@ -1076,7 +1084,7 @@ String.__name__ = true;
 $hxClasses.Array = Array;
 Array.__name__ = true;
 Date.__name__ = ["Date"];
-haxe_Resource.content = [{ name : "coverage", data : "Y3kxNjpjb3Zlcm1lLkNvdmVyYWdleTg6YnJhbmNoZXNxOjRjeTE0OmNvdmVybWUuQnJhbmNoeTM6cG9zb3k0OmZpbGV5MTM6c3JjJTJGTWFpbi5oeHkzOm1heGkxMzR5MzptaW5pMTMzZ2doeTEwOnN0YXRlbWVudHNxOjZjeTE3OmNvdmVybWUuU3RhdGVtZW50UjNvUjRSNVI2aTE4MlI3aTE3NmdnOjBjUjlSM29SNFI1UjZpNDM3UjdpNDAxZ2c6M2NSOVIzb1I0UjVSNmkyMzdSN2kxMjlnZzo3Y1I5UjNvUjRSNVI2aTIyNVI3aTIxNWdnOjFjUjlSM29SNFI1UjZpNDM3UjdpNDM0Z2c6MmNSOVIzb1I0UjVSNmk4NFI3aTgyZ2c6NWNSOVIzb1I0UjVSNmkxNjFSN2kxNTFnZzo4Y1I5UjNvUjRSNVI2aTI1OVI3aTI0OWdnaGc"}];
+haxe_Resource.content = [{ name : "coverage", data : "Y3kxNjpjb3Zlcm1lLkNvdmVyYWdleTg6YnJhbmNoZXNxOjRjeTE0OmNvdmVybWUuQnJhbmNoeTM6cG9zb3k0OmZpbGV5MTM6c3JjJTJGTWFpbi5oeHkzOm1heGkxMzR5MzptaW5pMTMzZ2doeTEwOnN0YXRlbWVudHNxOjZjeTE3OmNvdmVybWUuU3RhdGVtZW50UjNvUjRSNVI2aTE4MlI3aTE3NmdnOjBjUjlSM29SNFI1UjZpNDUxUjdpNDAxZ2c6M2NSOVIzb1I0UjVSNmkyMzdSN2kxMjlnZzo3Y1I5UjNvUjRSNVI2aTIyNVI3aTIxNWdnOjFjUjlSM29SNFI1UjZpNDM5UjdpNDM2Z2c6MmNSOVIzb1I0UjVSNmk4NFI3aTgyZ2c6NWNSOVIzb1I0UjVSNmkxNjFSN2kxNTFnZzo4Y1I5UjNvUjRSNVI2aTI1OVI3aTI0OWdnaGc"}];
 var __map_reserved = {}
 coverme_Logger.branchResults = new haxe_ds_IntMap();
 coverme_Logger.statementResults = new haxe_ds_IntMap();
