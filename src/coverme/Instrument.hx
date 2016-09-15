@@ -9,16 +9,20 @@ class Instrument {
     static var nextId = 0;
     static var functionStack:Array<Function>;
     static var coverage = new Coverage();
+    static var onGenerateRegistered = false;
 
     static function build():Array<Field> {
         var fields = Context.getBuildFields();
         for (field in fields)
             instrumentField(field);
 
-        Context.onGenerate(function(_) {
-            var data = haxe.io.Bytes.ofString(haxe.Serializer.run(coverage));
-            Context.addResource("coverage", data);
-        });
+        if (!onGenerateRegistered) {
+            onGenerateRegistered = true;
+            Context.onGenerate(function(_) {
+                var data = haxe.io.Bytes.ofString(haxe.Serializer.run(coverage));
+                Context.addResource("coverage", data);
+            });
+        }
 
         return fields;
     }
