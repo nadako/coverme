@@ -1,0 +1,11 @@
+{
+    "name": "coverme",
+    "description": "Code coverage for Haxe",
+    "url": "https://github.com/nadako/coverme",
+    "license": "MIT",
+    "version": "0.0.1",
+    "releasenote": "Initial release",
+    "contributors": ["nadako"],
+    "classPath": "src",
+    "tags": ["cross"]
+}
