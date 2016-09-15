@@ -87,32 +87,52 @@ _$List_ListNode.prototype = {
 	__class__: _$List_ListNode
 };
 var CoverTest = function() {
-	coverme_Logger.logStatement(0);
+	coverme_Logger.logStatement(2);
 };
 $hxClasses["CoverTest"] = CoverTest;
 CoverTest.__name__ = true;
 CoverTest.prototype = {
 	f: function(b) {
-		coverme_Logger.logStatement(1);
-		if(coverme_Logger.logBranch(2,b)) {
-			coverme_Logger.logStatement(3);
+		coverme_Logger.logStatement(3);
+		if(coverme_Logger.logBranch(4,b)) {
+			coverme_Logger.logStatement(5);
 			console.log("a");
-			coverme_Logger.logStatement(4);
+			coverme_Logger.logStatement(6);
 			return;
 		} else {
-			coverme_Logger.logStatement(5);
+			coverme_Logger.logStatement(7);
 			console.log("b");
 		}
-		coverme_Logger.logStatement(6);
+		coverme_Logger.logStatement(8);
 		console.log("c");
 	}
 	,__class__: CoverTest
+};
+var _$Main_MyInt_$Impl_$ = {};
+$hxClasses["_Main.MyInt_Impl_"] = _$Main_MyInt_$Impl_$;
+_$Main_MyInt_$Impl_$.__name__ = true;
+_$Main_MyInt_$Impl_$.times = function(this1,f) {
+	coverme_Logger.logStatement(0);
+	var _g1 = 0;
+	while(_g1 < this1) {
+		++_g1;
+		coverme_Logger.logStatement(1);
+		f();
+	}
 };
 var Main = function() { };
 $hxClasses["Main"] = Main;
 Main.__name__ = true;
 Main.main = function() {
-	new CoverTest().f(true);
+	var c = new CoverTest();
+	c.f(true);
+	c.f(false);
+	coverme_Logger.logStatement(0);
+	var _g1 = 0;
+	while(_g1 < 10) {
+		++_g1;
+		coverme_Logger.logStatement(1);
+	}
 	var coverage = coverme_Logger.getCoverage();
 	console.log("Missing branches:");
 	var tmp = coverage.branches.iterator();
@@ -1175,7 +1195,7 @@ var Bool = $hxClasses.Bool = Boolean;
 Bool.__ename__ = ["Bool"];
 var Class = $hxClasses.Class = { __name__ : ["Class"]};
 var Enum = { };
-haxe_Resource.content = [{ name : "coverage", data : "Y3kxNjpjb3Zlcm1lLkNvdmVyYWdleTg6YnJhbmNoZXNxOjJjeTE0OmNvdmVybWUuQnJhbmNoeTM6cG9zb3k0OmZpbGV5MTM6c3JjJTJGTWFpbi5oeHkzOm1heGkxMzR5MzptaW5pMTMzZ2doeTEwOnN0YXRlbWVudHNxOjZjeTE3OmNvdmVybWUuU3RhdGVtZW50UjNvUjRSNVI2aTI1OVI3aTI0OWdnOjBjUjlSM29SNFI1UjZpODRSN2k4MmdnOjRjUjlSM29SNFI1UjZpMTgyUjdpMTc2Z2c6M2NSOVIzb1I0UjVSNmkxNjFSN2kxNTFnZzoxY1I5UjNvUjRSNVI2aTIzN1I3aTEyOWdnOjVjUjlSM29SNFI1UjZpMjI1UjdpMjE1Z2doZw"}];
+haxe_Resource.content = [{ name : "coverage", data : "Y3kxNjpjb3Zlcm1lLkNvdmVyYWdleTg6YnJhbmNoZXNxOjRjeTE0OmNvdmVybWUuQnJhbmNoeTM6cG9zb3k0OmZpbGV5MTM6c3JjJTJGTWFpbi5oeHkzOm1heGkxMzR5MzptaW5pMTMzZ2doeTEwOnN0YXRlbWVudHNxOjZjeTE3OmNvdmVybWUuU3RhdGVtZW50UjNvUjRSNVI2aTE4MlI3aTE3NmdnOjBjUjlSM29SNFI1UjZpNDM3UjdpNDAxZ2c6M2NSOVIzb1I0UjVSNmkyMzdSN2kxMjlnZzo3Y1I5UjNvUjRSNVI2aTIyNVI3aTIxNWdnOjFjUjlSM29SNFI1UjZpNDM3UjdpNDM0Z2c6MmNSOVIzb1I0UjVSNmk4NFI3aTgyZ2c6NWNSOVIzb1I0UjVSNmkxNjFSN2kxNTFnZzo4Y1I5UjNvUjRSNVI2aTI1OVI3aTI0OWdnaGc"}];
 var __map_reserved = {}
 var ArrayBuffer = $global.ArrayBuffer || js_html_compat_ArrayBuffer;
 if(ArrayBuffer.prototype.slice == null) {

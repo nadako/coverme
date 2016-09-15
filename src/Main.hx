@@ -14,11 +14,22 @@ class CoverTest {
     }
 }
 
+@:build(coverme.Instrument.build())
+abstract MyInt(Int) from Int {
+    public inline function times(f:Void->Void) {
+        for (_ in 0...this)
+            f();
+    }
+}
+
 class Main {
     static function main() {
         var c = new CoverTest();
         c.f(true);
-        // c.f(false);
+        c.f(false);
+
+        var i:MyInt = 10;
+        i.times(function() {});
 
         // ---
 
