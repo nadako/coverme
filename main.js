@@ -45,12 +45,42 @@ Main.prototype = {
 		console.log("oh");
 	}
 };
+var coverme_BranchResult = function() {
+	this.trueCount = this.falseCount = 0;
+};
+coverme_BranchResult.prototype = {
+	report: function(value) {
+		if(value) {
+			this.trueCount++;
+		} else {
+			this.falseCount++;
+		}
+	}
+};
 var coverme_Logger = function() { };
 coverme_Logger.logStatement = function(id) {
+	var count = coverme_Logger.statementResults.h[id];
+	if(count == null) {
+		count = 1;
+	} else {
+		++count;
+	}
+	coverme_Logger.statementResults.h[id] = count;
 };
 coverme_Logger.logBranch = function(id,value) {
+	var result = coverme_Logger.branchResults.h[id];
+	if(result == null) {
+		result = new coverme_BranchResult();
+		coverme_Logger.branchResults.h[id] = result;
+	}
+	result.report(value);
 	return value;
 };
+var haxe_IMap = function() { };
+var haxe_ds_IntMap = function() {
+	this.h = { };
+};
+haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
 var js__$Boot_HaxeError = function(val) {
 	Error.call(this);
 	this.val = val;
@@ -70,5 +100,7 @@ js__$Boot_HaxeError.__super__ = Error;
 js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 });
 Main.a = 5;
+coverme_Logger.branchResults = new haxe_ds_IntMap();
+coverme_Logger.statementResults = new haxe_ds_IntMap();
 Main.main();
 })();
