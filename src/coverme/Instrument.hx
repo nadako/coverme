@@ -47,6 +47,7 @@ class Instrument {
                 {expr: EWhile(econd, ebody, normal), pos: expr.pos};
 
             case EBlock([]):
+                // we don't care about empty blocks unless it's a function expression
                 if (expr == functionStack[functionStack.length - 1].expr)
                     {expr: EBlock([createStatementLog()]), pos: expr.pos};
                 else
