@@ -5,9 +5,12 @@ class CoverTest {
     public function f(b:Bool) {
         if (b) {
             trace("a");
+            return;
         } else {
             trace("b");
         }
+
+        trace("c");
     }
 }
 

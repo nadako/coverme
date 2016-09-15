@@ -97,10 +97,14 @@ CoverTest.prototype = {
 		if(coverme_Logger.logBranch(2,b)) {
 			coverme_Logger.logStatement(3);
 			console.log("a");
-		} else {
 			coverme_Logger.logStatement(4);
+			return;
+		} else {
+			coverme_Logger.logStatement(5);
 			console.log("b");
 		}
+		coverme_Logger.logStatement(6);
+		console.log("c");
 	}
 	,__class__: CoverTest
 };
@@ -1171,7 +1175,7 @@ var Bool = $hxClasses.Bool = Boolean;
 Bool.__ename__ = ["Bool"];
 var Class = $hxClasses.Class = { __name__ : ["Class"]};
 var Enum = { };
-haxe_Resource.content = [{ name : "coverage", data : "Y3kxNjpjb3Zlcm1lLkNvdmVyYWdleTg6YnJhbmNoZXNxOjJjeTE0OmNvdmVybWUuQnJhbmNoeTM6cG9zb3k0OmZpbGV5MTM6c3JjJTJGTWFpbi5oeHkzOm1heGkxMzR5MzptaW5pMTMzZ2doeTEwOnN0YXRlbWVudHNxOjBjeTE3OmNvdmVybWUuU3RhdGVtZW50UjNvUjRSNVI2aTg0UjdpODJnZzo0Y1I5UjNvUjRSNVI2aTIwNFI3aTE5NGdnOjNjUjlSM29SNFI1UjZpMTYxUjdpMTUxZ2c6MWNSOVIzb1I0UjVSNmkyMTZSN2kxMjlnZ2hn"}];
+haxe_Resource.content = [{ name : "coverage", data : "Y3kxNjpjb3Zlcm1lLkNvdmVyYWdleTg6YnJhbmNoZXNxOjJjeTE0OmNvdmVybWUuQnJhbmNoeTM6cG9zb3k0OmZpbGV5MTM6c3JjJTJGTWFpbi5oeHkzOm1heGkxMzR5MzptaW5pMTMzZ2doeTEwOnN0YXRlbWVudHNxOjZjeTE3OmNvdmVybWUuU3RhdGVtZW50UjNvUjRSNVI2aTI1OVI3aTI0OWdnOjBjUjlSM29SNFI1UjZpODRSN2k4MmdnOjRjUjlSM29SNFI1UjZpMTgyUjdpMTc2Z2c6M2NSOVIzb1I0UjVSNmkxNjFSN2kxNTFnZzoxY1I5UjNvUjRSNVI2aTIzN1I3aTEyOWdnOjVjUjlSM29SNFI1UjZpMjI1UjdpMjE1Z2doZw"}];
 var __map_reserved = {}
 var ArrayBuffer = $global.ArrayBuffer || js_html_compat_ArrayBuffer;
 if(ArrayBuffer.prototype.slice == null) {
