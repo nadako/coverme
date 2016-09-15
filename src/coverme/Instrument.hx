@@ -57,6 +57,11 @@ class Instrument {
                 ebody = instrumentExpr(blockExpr(ebody));
                 {expr: EWhile(econd, ebody, normal), pos: expr.pos};
 
+            case EFor(eit, ebody):
+                eit = instrumentExpr(eit);
+                ebody = instrumentExpr(blockExpr(ebody));
+                {expr: EFor(eit, ebody), pos: expr.pos};
+
             case EBlock([]):
                 // we don't care about empty blocks unless it's a function expression
                 if (expr == functionStack[functionStack.length - 1].expr)
