@@ -7,6 +7,7 @@ using haxe.macro.ExprTools;
 
 class Instrument {
     static var nextId = 0;
+    static var functionStack:Array<Function>;
 
     static function build():Array<Field> {
         var fields = Context.getBuildFields();
@@ -19,12 +20,8 @@ class Instrument {
     static function instrumentField(field:Field) {
         switch (field.kind) {
             case FFun(fun) if (fun.expr != null):
-                fun.expr = switch (fun.expr.expr) {
-                    case EBlock([]): // TODO: what about empty inner functions?
-                        {expr: EBlock([createStatementLog()]), pos: fun.expr.pos};
-                    default:
-                        instrumentExpr(blockExpr(fun.expr));
-                };
+                functionStack = [fun];
+                fun.expr = instrumentExpr(blockExpr(fun.expr));
             default:
         }
     }
@@ -50,7 +47,10 @@ class Instrument {
                 {expr: EWhile(econd, ebody, normal), pos: expr.pos};
 
             case EBlock([]):
-                expr;
+                if (expr == functionStack[functionStack.length - 1].expr)
+                    {expr: EBlock([createStatementLog()]), pos: expr.pos};
+                else
+                    expr;
 
             case EBlock(exprs):
                 var instrumentedExprs = [];
@@ -61,6 +61,12 @@ class Instrument {
                 }
                 {expr: EBlock(instrumentedExprs), pos: expr.pos};
 
+            case EFunction(name, fun) if (fun.expr != null):
+                functionStack.push(fun);
+                fun.expr = instrumentExpr(blockExpr(fun.expr));
+                functionStack.pop();
+                {expr: EFunction(name, fun), pos: expr.pos};
+
             default:
                 expr.map(instrumentExpr);
         }
@@ -68,7 +74,7 @@ class Instrument {
 
     static function isStatement(e:Expr):Bool {
         return switch (e.expr) {
-            case EConst(_) | EField(_, _): false;
+            case EConst(_) | EField(_, _) | EFunction(_, _) | EBlock(_): false;
             default: true;
         }
     }

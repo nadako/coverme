@@ -1,12 +1,21 @@
+@:analyzer(ignore)
 @:build(coverme.Instrument.build())
 class Main {
     static var a = 5;
 
-    @:analyzer(ignore)
+    function f() {
+        trace("hi");
+        {
+        };
+        trace("oh");
+    }
+
     static function main() {
         trace("Hi!");
 
         var v = {};
+
+        function f() {}
 
         trace(if (a > 0) Main.a else 0);
         while (a > 10) {
