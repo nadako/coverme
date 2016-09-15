@@ -28,5 +28,19 @@ class Main {
 
         do trace("HI") while (false);
         trace("Bye!");
+
+        var coverage = coverme.Logger.getCoverage();
+
+        trace("Missing branches:");
+        for (branch in coverage.branches) {
+            if (branch.result.trueCount == 0 || branch.result.falseCount == 0)
+                trace(branch.pos);
+        }
+
+        trace("Missing statements:");
+        for (statement in coverage.statements) {
+            if (statement.result == 0)
+                trace(statement.pos);
+        }
     }
 }

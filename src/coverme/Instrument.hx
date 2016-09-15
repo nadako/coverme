@@ -8,12 +8,18 @@ using haxe.macro.ExprTools;
 class Instrument {
     static var nextId = 0;
     static var functionStack:Array<Function>;
+    static var coverage = new Coverage();
 
     static function build():Array<Field> {
         var fields = Context.getBuildFields();
-        for (field in fields) {
+        for (field in fields)
             instrumentField(field);
-        }
+
+        Context.onGenerate(function(_) {
+            var data = haxe.io.Bytes.ofString(haxe.Serializer.run(coverage));
+            Context.addResource("coverage", data);
+        });
+
         return fields;
     }
 
@@ -22,6 +28,7 @@ class Instrument {
             case FFun(fun) if (fun.expr != null):
                 functionStack = [fun];
                 fun.expr = instrumentExpr(blockExpr(fun.expr));
+                functionStack = null;
             default:
         }
     }
@@ -49,7 +56,7 @@ class Instrument {
             case EBlock([]):
                 // we don't care about empty blocks unless it's a function expression
                 if (expr == functionStack[functionStack.length - 1].expr)
-                    {expr: EBlock([createStatementLog()]), pos: expr.pos};
+                    {expr: EBlock([createStatementLog(expr)]), pos: expr.pos};
                 else
                     expr;
 
@@ -57,7 +64,7 @@ class Instrument {
                 var instrumentedExprs = [];
                 for (expr in exprs) {
                     if (isStatement(expr))
-                        instrumentedExprs.push(createStatementLog());
+                        instrumentedExprs.push(createStatementLog(expr));
                     instrumentedExprs.push(instrumentExpr(expr));
                 }
                 {expr: EBlock(instrumentedExprs), pos: expr.pos};
@@ -87,13 +94,15 @@ class Instrument {
         }
     }
 
-    static function createStatementLog():Expr {
+    static function createStatementLog(expr:Expr):Expr {
         var id = nextId++;
+        coverage.statements[id] = new Statement(Context.getPosInfos(expr.pos));
         return macro coverme.Logger.logStatement($v{id});
     }
 
     static function createBranchLog(cond:Expr):Expr {
         var id = nextId++;
+        coverage.branches[id] = new Branch(Context.getPosInfos(cond.pos));
         return macro coverme.Logger.logBranch($v{id}, $cond);
     }
 }

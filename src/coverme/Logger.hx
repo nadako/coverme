@@ -4,6 +4,12 @@ class Logger {
     static var branchResults = new Map<Int,BranchResult>();
     static var statementResults = new Map<Int,Int>();
 
+    public static function getCoverage():Coverage {
+        var coverage:Coverage = haxe.Unserializer.run(haxe.Resource.getString("coverage"));
+        coverage.setResults(branchResults, statementResults);
+        return coverage;
+    }
+
     public static function logStatement(id:Int) {
         var count = statementResults[id];
         if (count == null)
