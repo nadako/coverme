@@ -1,14 +1,13 @@
 package coverme;
 
 class Statement {
+    public var field(default,null):Field;
     public var pos(default,null):Position;
-    public var result(default,null):Int;
+    public var count:Int;
 
-    public function new(pos:Position) {
+    public function new(field:Field, pos:Position) {
+        this.field = field;
         this.pos = pos;
-    }
-
-    public function setResult(count:Int) {
-        result = count;
+        count = 0;
     }
 }

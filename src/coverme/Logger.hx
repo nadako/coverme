@@ -1,16 +1,39 @@
 package coverme;
 
 class Logger {
-    static var branchResults = new Map<Int,BranchResult>();
-    static var statementResults = new Map<Int,Int>();
+    public static var instance(get,null):Logger;
+    static function get_instance():Logger {
+        if (instance == null) instance = new Logger();
+        return instance;
+    }
 
-    public static function getCoverage():Coverage {
-        var coverage:Coverage = haxe.Unserializer.run(haxe.Resource.getString("coverage"));
-        coverage.setResults(branchResults, statementResults);
+    var fieldResults:Map<Int,Int>;
+    var statementResults:Map<Int,Int>;
+    var branchResults:Map<Int,BranchResult>;
+
+    function new() {
+        fieldResults = new Map();
+        statementResults = new Map();
+        branchResults = new Map();
+    }
+
+    public function getCoverage():Coverage {
+        var data = haxe.Resource.getString(Coverage.RESOURCE_NAME);
+        var coverage:Coverage = haxe.Unserializer.run(data);
+        coverage.setResults(fieldResults, statementResults, branchResults);
         return coverage;
     }
 
-    public static function logStatement(id:Int) {
+    public function logField(id:Int) {
+        var count = fieldResults[id];
+        if (count == null)
+            count = 1;
+        else
+            count++;
+        fieldResults[id] = count;
+    }
+
+    public function logStatement(id:Int) {
         var count = statementResults[id];
         if (count == null)
             count = 1;
@@ -19,7 +42,7 @@ class Logger {
         statementResults[id] = count;
     }
 
-    public static function logBranch(id:Int, value:Bool):Bool {
+    public function logBranch(id:Int, value:Bool):Bool {
         var result = branchResults[id];
         if (result == null) {
             result = new BranchResult();

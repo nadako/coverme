@@ -1,10 +1,12 @@
 class HtmlReport {
     public static function report(coverage:coverme.Coverage, out:String) {
+        var template = new haxe.Template(sys.io.File.getContent("bin/index.html.tpl"));
+
         var files = new Map();
         function getFileData(file) {
             var data = files[file];
             if (data == null)
-                data = files[file] = {branches: [], statements: []};
+                data = files[file] = {branches: [], statements: [], fields: []};
             return data;
         }
 
@@ -14,22 +16,10 @@ class HtmlReport {
         for (statement in coverage.statements)
             getFileData(statement.pos.file).statements.push(statement);
 
-        var output = [
-            '<link rel="stylesheet" href="github.css">
-<script src="highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-<style>
-.missing {
-    background-color: #fc8c84;
-}
+        for (field in coverage.fields)
+            getFileData(field.pos.file).fields.push(field);
 
-.missing:hover, .covered:hover {
-    background-color: #ffe87c;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
-}
-</style>',
-        ];
+        var output = [];
 
         for (file in files.keys()) {
             output.push('<h1>$file</h1>');
@@ -52,25 +42,33 @@ class HtmlReport {
 
             var fileData = files[file];
 
+            for (field in fileData.fields) {
+                if (field.count == 0)
+                    insert(field.pos.min, '<span class="missing" title="field not evaluated">');
+                else
+                    insert(field.pos.min, '<span class="covered" title="field evaluated ${field.count} times">');
+                insert(field.pos.max, '</span>');
+            }
+
             for (branch in fileData.branches) {
                 var missing = [];
-                if (branch.result.trueCount == 0)
+                if (branch.trueCount == 0)
                     missing.push("true");
-                if (branch.result.falseCount == 0)
+                if (branch.falseCount == 0)
                     missing.push("false");
                 if (missing.length > 0) {
                     insert(branch.pos.min, '<span class="missing" title="path${if (missing.length > 1) "s" else ""} not taken: ${missing.join(", ")}">');
                 } else {
-                    insert(branch.pos.min, '<span class="covered" title="paths taken: true=${branch.result.trueCount}, false=${branch.result.falseCount}">');
+                    insert(branch.pos.min, '<span class="covered" title="paths taken: true=${branch.trueCount}, false=${branch.falseCount}">');
                 }
                 insert(branch.pos.max, '</span>');
             }
 
             for (statement in fileData.statements) {
-                if (statement.result == 0) {
-                    insert(statement.pos.min, '<span class="missing" title="statement not executed">');
+                if (statement.count == 0) {
+                    insert(statement.pos.min, '<span class="missing" title="statement not evaluated">');
                 } else {
-                    insert(statement.pos.min, '<span class="covered" title="statement executed ${statement.result} times">');
+                    insert(statement.pos.min, '<span class="covered" title="statement evaluated ${statement.count} times">');
                 }
                 insert(statement.pos.max, '</span>');
             }
@@ -90,7 +88,7 @@ class HtmlReport {
             output.push('</code></pre>');
         }
 
-        var html = output.join("\n");
+        var html = template.execute({content: output.join("\n")});
         sys.io.File.saveContent(out, html);
     }
 }

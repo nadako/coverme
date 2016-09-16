@@ -5,10 +5,11 @@ class BranchResult {
     public var falseCount(default,null):Int;
 
     public function new() {
-        trueCount = falseCount = 0;
+        trueCount = 0;
+        falseCount = 0;
     }
 
-    public function report(value:Bool) {
+    public inline function report(value:Bool) {
         if (value)
             trueCount++;
         else
