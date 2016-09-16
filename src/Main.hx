@@ -42,6 +42,7 @@ class Main {
         var c = new CoverTest();
         // var c = new CoverTest();
         c.f(15);
+        c.f(10);
 
         var i:pack.MyInt = 10;
         i.times(function() {});
