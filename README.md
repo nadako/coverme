@@ -58,3 +58,7 @@ After running the code in question, we have all counters there and we can analyz
 and report statements and branches that wasn't evaluated once in a nice HTML page:
 
 ![](http://i.imgur.com/vBEIZXk.gif)
+
+## Obligatory meme
+
+![](http://weknowmemes.com/wp-content/uploads/2013/01/cover-me-comic.jpg)
