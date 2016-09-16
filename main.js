@@ -36,7 +36,7 @@ HtmlReport.report = function(coverage,out) {
 		var statement = tmp1.next();
 		getFileData(statement.pos.file).statements.push(statement);
 	}
-	var output = ["<link rel=\"stylesheet\" href=\"github.css\">\n<script src=\"highlight.pack.js\"></script>\n<script>hljs.initHighlightingOnLoad();</script>\n<style>\n.missing {\n    background-color: #fc8c84;\n}\n.missing:hover {\n    background-color: #82B8C0;\n}\n</style>"];
+	var output = ["<link rel=\"stylesheet\" href=\"github.css\">\n<script src=\"highlight.pack.js\"></script>\n<script>hljs.initHighlightingOnLoad();</script>\n<style>\n.missing {\n    background-color: #fc8c84;\n}\n\n.missing:hover, .covered:hover {\n    background-color: #ffe87c;\n    border-left: 1px solid gray;\n    border-right: 1px solid gray;\n}\n</style>"];
 	var tmp2 = files.keys();
 	while(tmp2.hasNext()) {
 		var file1 = tmp2.next();
@@ -77,8 +77,10 @@ HtmlReport.report = function(coverage,out) {
 			}
 			if(missing.length > 0) {
 				insert(branch1.pos.min,"<span class=\"missing\" title=\"path" + (missing.length > 1?"s":"") + " not taken: " + missing.join(", ") + "\">");
-				insert(branch1.pos.max,"</span>");
+			} else {
+				insert(branch1.pos.min,"<span class=\"covered\" title=\"paths taken: true=" + branch1.result.trueCount + ", false=" + branch1.result.falseCount + "\">");
 			}
+			insert(branch1.pos.max,"</span>");
 		}
 		var _g12 = 0;
 		var _g22 = fileData.statements;
@@ -87,8 +89,10 @@ HtmlReport.report = function(coverage,out) {
 			++_g12;
 			if(statement1.result == 0) {
 				insert(statement1.pos.min,"<span class=\"missing\" title=\"statement not executed\">");
-				insert(statement1.pos.max,"</span>");
+			} else {
+				insert(statement1.pos.min,"<span class=\"covered\" title=\"statement executed " + statement1.result + " times\">");
 			}
+			insert(statement1.pos.max,"</span>");
 		}
 		var resultChars = [];
 		var _g23 = 0;

@@ -5,23 +5,26 @@
 .missing {
     background-color: #fc8c84;
 }
-.missing:hover {
-    background-color: #82B8C0;
+
+.missing:hover, .covered:hover {
+    background-color: #ffe87c;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
 }
 </style>
 <h1>src/Main.hx</h1>
 <pre><code>
 @:build(coverme.Instrument.build())
 class CoverTest {
-    public function new() {}
+    public function new() <span class="covered" title="statement executed 1 times">{}</span>
 
     public function f(b:Bool) {
-        if (<span class="missing" title="path not taken: false">b</span>) {
-            trace(&quot;a&quot;);
-            return;
+        <span class="covered" title="statement executed 1 times">if (<span class="missing" title="path not taken: false">b</span>) {
+            <span class="covered" title="statement executed 1 times">trace(&quot;a&quot;)</span>;
+            <span class="covered" title="statement executed 1 times">return</span>;
         } else {
             <span class="missing" title="statement not executed">trace(&quot;b&quot;)</span>;
-        }
+        }</span>
 
         <span class="missing" title="statement not executed">trace(&quot;c&quot;)</span>;
     }
@@ -30,9 +33,9 @@ class CoverTest {
 @:build(coverme.Instrument.build())
 abstract MyInt(Int) from Int {
     public inline function times(f:Void-&gt;Void) {
-        for (_ in 0...this) {
-            f();
-        }
+        <span class="covered" title="statement executed 1 times">for (_ in 0...this) {
+            <span class="covered" title="statement executed 5 times">f()</span>;
+        }</span>
     }
 }
 

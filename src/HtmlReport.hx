@@ -22,8 +22,11 @@ class HtmlReport {
 .missing {
     background-color: #fc8c84;
 }
-.missing:hover {
-    background-color: #82B8C0;
+
+.missing:hover, .covered:hover {
+    background-color: #ffe87c;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
 }
 </style>',
         ];
@@ -57,15 +60,19 @@ class HtmlReport {
                     missing.push("false");
                 if (missing.length > 0) {
                     insert(branch.pos.min, '<span class="missing" title="path${if (missing.length > 1) "s" else ""} not taken: ${missing.join(", ")}">');
-                    insert(branch.pos.max, '</span>');
+                } else {
+                    insert(branch.pos.min, '<span class="covered" title="paths taken: true=${branch.result.trueCount}, false=${branch.result.falseCount}">');
                 }
+                insert(branch.pos.max, '</span>');
             }
 
             for (statement in fileData.statements) {
                 if (statement.result == 0) {
                     insert(statement.pos.min, '<span class="missing" title="statement not executed">');
-                    insert(statement.pos.max, '</span>');
+                } else {
+                    insert(statement.pos.min, '<span class="covered" title="statement executed ${statement.result} times">');
                 }
+                insert(statement.pos.max, '</span>');
             }
 
             var resultChars = [];
