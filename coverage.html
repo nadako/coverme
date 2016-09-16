@@ -16,6 +16,19 @@
 <pre><code>
 @:build(coverme.Instrument.build())
 class CoverTest {
+    // TODO: these needs to be covered as well
+    var a = {};
+    var b = {
+        {}
+    };
+    var c = {
+        trace(&quot;hi&quot;);
+        if (true) {
+            trace(&quot;hey&quot;);
+        }
+        5;
+    }
+
     public function new() <span class="covered" title="statement executed 1 times">{}</span>
 
     public function f(b:Bool) {

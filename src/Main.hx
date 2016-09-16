@@ -1,5 +1,18 @@
 @:build(coverme.Instrument.build())
 class CoverTest {
+    // TODO: these needs to be covered as well
+    var a = {};
+    var b = {
+        {}
+    };
+    var c = {
+        trace("hi");
+        if (true) {
+            trace("hey");
+        }
+        5;
+    }
+
     public function new() {}
 
     public function f(b:Bool) {
