@@ -36,7 +36,7 @@ HtmlReport.report = function(coverage,out) {
 		var statement = tmp1.next();
 		getFileData(statement.pos.file).statements.push(statement);
 	}
-	var output = ["<style>\n.missing {\n    background-color: #fc8c84;\n}\n.missing:hover {\n    background-color: #82B8C0;\n}\n</style>"];
+	var output = ["<link rel=\"stylesheet\" href=\"github.css\">\n<script src=\"highlight.pack.js\"></script>\n<script>hljs.initHighlightingOnLoad();</script>\n<style>\n.missing {\n    background-color: #fc8c84;\n}\n.missing:hover {\n    background-color: #82B8C0;\n}\n</style>"];
 	var tmp2 = files.keys();
 	while(tmp2.hasNext()) {
 		var file1 = tmp2.next();
@@ -48,10 +48,6 @@ HtmlReport.report = function(coverage,out) {
 		while(_g2 < _g1) {
 			var c = content.charAt(_g2++);
 			c = StringTools.htmlEscape(c,true);
-			var _this_r = new RegExp("\r?\n","".split("u").join(""));
-			c = c.replace(_this_r,"<br/>\n");
-			c = StringTools.replace(c," ","&nbsp;");
-			c = StringTools.replace(c,"\t","&nbsp;&nbsp;&nbsp;&nbsp;");
 			_g.push(c);
 		}
 		var insertions = [new haxe_ds_IntMap()];
@@ -110,9 +106,9 @@ HtmlReport.report = function(coverage,out) {
 			}
 			resultChars.push(_g[i]);
 		}
-		output.push("<code>");
+		output.push("<pre><code>");
 		output.push(resultChars.join(""));
-		output.push("</code>");
+		output.push("</code></pre>");
 	}
 	js_node_Fs.writeFileSync(out,output.join("\n"));
 };
@@ -265,9 +261,6 @@ StringTools.htmlEscape = function(s,quotes) {
 	} else {
 		return s;
 	}
-};
-StringTools.replace = function(s,sub,by) {
-	return s.split(sub).join(by);
 };
 var Type = function() { };
 $hxClasses["Type"] = Type;

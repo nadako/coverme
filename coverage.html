@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="github.css">
+<script src="highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 <style>
 .missing {
     background-color: #fc8c84;
@@ -7,46 +10,46 @@
 }
 </style>
 <h1>src/Main.hx</h1>
-<code>
-@:build(coverme.Instrument.build())<br/>
-class&nbsp;CoverTest&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;new()&nbsp;{}<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;f(b:Bool)&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(<span class="missing" title="path not taken: false">b</span>)&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trace(&quot;a&quot;);<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="missing" title="statement not executed">trace(&quot;b&quot;)</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="missing" title="statement not executed">trace(&quot;c&quot;)</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-}<br/>
-<br/>
-@:build(coverme.Instrument.build())<br/>
-abstract&nbsp;MyInt(Int)&nbsp;from&nbsp;Int&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;inline&nbsp;function&nbsp;times(f:Void-&gt;Void)&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(_&nbsp;in&nbsp;0...this)&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f();<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-}<br/>
-<br/>
-class&nbsp;Main&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;function&nbsp;main()&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;c&nbsp;=&nbsp;new&nbsp;CoverTest();<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c.f(true);<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;c.f(false);<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;i:MyInt&nbsp;=&nbsp;5;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i.times(function()&nbsp;{});<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;---<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;coverage&nbsp;=&nbsp;coverme.Logger.getCoverage();<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HtmlReport.report(coverage,&nbsp;&quot;coverage.html&quot;);<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-}<br/>
+<pre><code>
+@:build(coverme.Instrument.build())
+class CoverTest {
+    public function new() {}
 
-</code>
+    public function f(b:Bool) {
+        if (<span class="missing" title="path not taken: false">b</span>) {
+            trace(&quot;a&quot;);
+            return;
+        } else {
+            <span class="missing" title="statement not executed">trace(&quot;b&quot;)</span>;
+        }
+
+        <span class="missing" title="statement not executed">trace(&quot;c&quot;)</span>;
+    }
+}
+
+@:build(coverme.Instrument.build())
+abstract MyInt(Int) from Int {
+    public inline function times(f:Void-&gt;Void) {
+        for (_ in 0...this) {
+            f();
+        }
+    }
+}
+
+class Main {
+    static function main() {
+        var c = new CoverTest();
+        c.f(true);
+        // c.f(false);
+
+        var i:MyInt = 5;
+        i.times(function() {});
+
+        // ---
+
+        var coverage = coverme.Logger.getCoverage();
+        HtmlReport.report(coverage, &quot;coverage.html&quot;);
+    }
+}
+
+</code></pre>

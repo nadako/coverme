@@ -15,14 +15,17 @@ class HtmlReport {
             getFileData(statement.pos.file).statements.push(statement);
 
         var output = [
-            "<style>
+            '<link rel="stylesheet" href="github.css">
+<script src="highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<style>
 .missing {
     background-color: #fc8c84;
 }
 .missing:hover {
     background-color: #82B8C0;
 }
-</style>",
+</style>',
         ];
 
         for (file in files.keys()) {
@@ -32,9 +35,6 @@ class HtmlReport {
                 for (i in 0...content.length) {
                     var c = content.charAt(i);
                     c = StringTools.htmlEscape(c, true);
-                    c = ~/\r?\n/.replace(c, "<br/>\n");
-                    c = StringTools.replace(c, " ", "&nbsp;");
-                    c = StringTools.replace(c, "\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
                     c;
                 }
             ];
@@ -78,9 +78,9 @@ class HtmlReport {
                 resultChars.push(chars[i]);
             }
 
-            output.push('<code>');
+            output.push('<pre><code>');
             output.push(resultChars.join(""));
-            output.push('</code>');
+            output.push('</code></pre>');
         }
 
         var html = output.join("\n");
