@@ -9,6 +9,8 @@ it's written from scratch in modern Haxe for modern Haxe.
 
 Not much more to say right now, since it's in very early stage of development.
 
+Here's something to play with though: https://nadako.github.io/coverme/
+
 ## Usage
 
 Don't use it, it's not ready. I'll update the README when it's ready for public usage. :)
