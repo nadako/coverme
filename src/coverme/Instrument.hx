@@ -23,6 +23,7 @@ class Instrument {
 
     static function build():Array<Field> {
         context = createInstrumentContext(Context.getLocalType());
+        getCurrentType(); // register type for coverage
 
         var fields = Context.getBuildFields();
         for (field in fields) {
@@ -166,7 +167,7 @@ class Instrument {
         }
     }
 
-    static function getCurrentField():coverme.Field {
+    static function getCurrentType():coverme.ModuleType {
         var pack = coverage.findPackage(context.packagePath);
         if (pack == null) {
             pack = new coverme.Package(context.packagePath);
@@ -185,6 +186,12 @@ class Instrument {
             module.types.push(type);
         }
 
+        return type;
+    }
+
+    static function getCurrentField():coverme.Field {
+        var type = getCurrentType();
+
         var field = type.findField(context.currentField.name);
         if (field == null) {
             field = new coverme.Field(type, context.currentField.name, coverme.Position.fromPos(Context.getPosInfos(context.currentField.pos)));
@@ -202,13 +209,23 @@ class Instrument {
 
     static function createStatementLog(expr:Expr):Expr {
         var id = nextStatementId++;
-        coverage.statements[id] = new Statement(getCurrentField(), coverme.Position.fromPos(Context.getPosInfos(expr.pos)));
+
+        var field = getCurrentField();
+        var statement = new Statement(field, coverme.Position.fromPos(Context.getPosInfos(expr.pos)));
+        coverage.statements[id] = statement;
+        field.statements.push(statement);
+
         return macro coverme.Logger.instance.logStatement($v{id});
     }
 
     static function createBranchLog(expr:Expr):Expr {
         var id = nextBranchId++;
-        coverage.branches[id] = new Branch(getCurrentField(), coverme.Position.fromPos(Context.getPosInfos(expr.pos)));
+
+        var field = getCurrentField();
+        var branch = new Branch(field, coverme.Position.fromPos(Context.getPosInfos(expr.pos)));
+        coverage.branches[id] = branch;
+        field.branches.push(branch);
+
         return macro coverme.Logger.instance.logBranch($v{id}, $expr);
     }
 }

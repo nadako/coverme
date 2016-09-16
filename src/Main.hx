@@ -1,4 +1,9 @@
 @:build(coverme.Instrument.build())
+class C {
+    function new () {}
+}
+
+@:build(coverme.Instrument.build())
 class CoverTest {
     var a = {};
     var b = {
@@ -32,26 +37,18 @@ class CoverTest {
     }
 }
 
-@:build(coverme.Instrument.build())
-abstract MyInt(Int) from Int {
-    public inline function times(fn:Void->Void) {
-        for (_ in 0...this)
-            fn();
-    }
-}
-
 class Main {
     static function main() {
         var c = new CoverTest();
         // var c = new CoverTest();
         c.f(15);
 
-        var i:MyInt = 5;
+        var i:pack.MyInt = 10;
         i.times(function() {});
 
         // ---
 
         var coverage = coverme.Logger.instance.getCoverage();
-        HtmlReport.report(coverage, "bin/index.html");
+        HtmlReport.report(coverage, "coverage");
     }
 }
