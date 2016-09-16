@@ -241,7 +241,7 @@ Main.main = function() {
 		++_g1;
 		coverme_Logger.logStatement(1);
 	}
-	HtmlReport.report(coverme_Logger.getCoverage(),"coverage.html");
+	HtmlReport.report(coverme_Logger.getCoverage(),"bin/index.html");
 };
 Math.__name__ = true;
 var Reflect = function() { };

@@ -1,0 +1,18 @@
+sudo: required
+dist: trusty
+
+language: haxe
+
+os:
+  - linux
+
+haxe:
+  - development
+
+install:
+  - haxelib install hxnodejs
+
+script:
+  - haxe build.hxml
+  - node main.js
+  - bash deploy.sh

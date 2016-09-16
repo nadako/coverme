@@ -48,6 +48,6 @@ class Main {
         // ---
 
         var coverage = coverme.Logger.getCoverage();
-        HtmlReport.report(coverage, "coverage.html");
+        HtmlReport.report(coverage, "bin/index.html");
     }
 }
