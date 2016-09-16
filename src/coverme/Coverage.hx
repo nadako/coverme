@@ -7,12 +7,14 @@ class Coverage {
     public var fields(default,null):Map<Int,Field>;
     public var branches(default,null):Map<Int,Branch>;
     public var statements(default,null):Map<Int,Statement>;
+    public var stats(default,null):Stats;
 
     public function new() {
         packages = [];
         fields = new Map();
         branches = new Map();
         statements = new Map();
+        stats = new Stats();
     }
 
     public function findPackage(path:Array<String>):Null<Package> {
@@ -36,6 +38,17 @@ class Coverage {
             var branch = branches[branchId];
             branch.trueCount = result.trueCount;
             branch.falseCount = result.falseCount;
+        }
+
+        for (pack in packages) {
+            pack.initStats();
+            stats.statementsCovered += pack.stats.statementsCovered;
+            stats.branchesCovered += pack.stats.branchesCovered;
+            stats.fieldsCovered += pack.stats.fieldsCovered;
+            stats.typesCovered += pack.stats.typesCovered;
+            stats.modulesCovered += pack.stats.modulesCovered;
+            if (pack.stats.modulesCovered > 0)
+                stats.packagesCovered++;
         }
     }
 }

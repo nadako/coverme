@@ -171,18 +171,24 @@ class Instrument {
         var pack = coverage.findPackage(context.packagePath);
         if (pack == null) {
             pack = new coverme.Package(context.packagePath);
+            coverage.stats.packagesTotal++;
             coverage.packages.push(pack);
         }
 
         var module = pack.findModule(context.moduleName);
         if (module == null) {
             module = new coverme.Module(pack, context.moduleName);
+            pack.stats.modulesTotal++;
+            coverage.stats.modulesTotal++;
             pack.modules.push(module);
         }
 
         var type = module.findType(context.typeName);
         if (type == null) {
             type = new coverme.ModuleType(module, context.typeName);
+            module.stats.typesTotal++;
+            pack.stats.typesTotal++;
+            coverage.stats.typesTotal++;
             module.types.push(type);
         }
 
@@ -195,6 +201,10 @@ class Instrument {
         var field = type.findField(context.currentField.name);
         if (field == null) {
             field = new coverme.Field(type, context.currentField.name, coverme.Position.fromPos(Context.getPosInfos(context.currentField.pos)));
+            type.stats.fieldsTotal++;
+            type.module.stats.fieldsTotal++;
+            type.module.pack.stats.fieldsTotal++;
+            coverage.stats.fieldsTotal++;
             type.fields.push(field);
         }
 
@@ -213,6 +223,12 @@ class Instrument {
         var field = getCurrentField();
         var statement = new Statement(field, coverme.Position.fromPos(Context.getPosInfos(expr.pos)));
         coverage.statements[id] = statement;
+
+        field.stats.statementsTotal++;
+        field.type.stats.statementsTotal++;
+        field.type.module.stats.statementsTotal++;
+        field.type.module.pack.stats.statementsTotal++;
+        coverage.stats.statementsTotal++;
         field.statements.push(statement);
 
         return macro coverme.Logger.instance.logStatement($v{id});
@@ -224,6 +240,11 @@ class Instrument {
         var field = getCurrentField();
         var branch = new Branch(field, coverme.Position.fromPos(Context.getPosInfos(expr.pos)));
         coverage.branches[id] = branch;
+        field.stats.branchesTotal++;
+        field.type.stats.branchesTotal++;
+        field.type.module.stats.branchesTotal++;
+        field.type.module.pack.stats.branchesTotal++;
+        coverage.stats.branchesTotal++;
         field.branches.push(branch);
 
         return macro coverme.Logger.instance.logBranch($v{id}, $expr);

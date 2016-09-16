@@ -13,11 +13,37 @@ class HtmlReport {
             return '<a href="$href">${name.htmlEscape()}</a>';
         }
 
+        function row(cells:Array<String>, tag:String):String {
+            var r = ["<tr>"];
+            for (cell in cells)
+                r.push('<$tag>$cell</$tag>');
+            r.push("</tr>");
+            return r.join("\n");
+        }
+        inline function tr(cells) return row(cells, "td");
+        inline function trh(cells) return row(cells, "th");
+
+        function stat(total:Int, covered:Int):String {
+            var percent =
+                if (total == 0)
+                    0
+                else
+                    Math.round((covered / total) * 10000) / 100;
+
+            return '$percent% ($covered / $total)';
+        }
+
         var index = [
             "<h1>Packages</h1>"
         ];
 
-        index.push("<ul>");
+        index.push("<table border>");
+        index.push(trh([
+            "name",
+            "statements",
+            "branches",
+            "fields",
+        ]));
         for (pack in coverage.packages) {
             var dotPath = pack.path.join(".");
             var packDir = if (dotPath == "") "root-package" else dotPath;
@@ -27,7 +53,13 @@ class HtmlReport {
                 '<h1>Package: ${if (dotPath == "") "<root package>".htmlEscape() else dotPath}</h1>',
                 link("../index.html", "go up"),
             ];
-            packIndex.push("<ul>");
+            packIndex.push("<table border>");
+            packIndex.push(trh([
+                "name",
+                "statements",
+                "branches",
+                "fields",
+            ]));
             for (module in pack.modules) {
                 sys.FileSystem.createDirectory('$outDir/$packDir/${module.name}');
 
@@ -36,7 +68,13 @@ class HtmlReport {
                     '<h1>Module: $moduleStr</h1>',
                     link("../index.html", "go up"),
                 ];
-                moduleIndex.push("<ul>");
+                moduleIndex.push("<table border>");
+                moduleIndex.push(trh([
+                    "name",
+                    "statements",
+                    "branches",
+                    "fields",
+                ]));
                 var firstType = null;
                 for (type in module.types) {
                     if (firstType == null)
@@ -45,28 +83,55 @@ class HtmlReport {
                     var content = [
                         '<h1>Type: ${type.name} ($moduleStr)</h1>',
                         link("./index.html", "go up"),
+                        "<table border>",
+                        trh([
+                            "statements",
+                            "branches",
+                            "fields",
+                        ]),
+                        tr([
+                            stat(type.stats.statementsTotal, type.stats.statementsCovered),
+                            stat(type.stats.branchesTotal, type.stats.branchesCovered),
+                            stat(type.stats.fieldsTotal, type.stats.fieldsCovered),
+                        ]),
+                        "</table>",
                         renderTypePage(type),
                     ];
 
                     sys.io.File.saveContent('$outDir/$packDir/${module.name}/${type.name}.html', content.join("\n"));
 
-                    moduleIndex.push('\t<li>' + link('${type.name}.html', type.name));
+                    moduleIndex.push(tr([
+                        link('${type.name}.html', type.name),
+                        stat(type.stats.statementsTotal, type.stats.statementsCovered),
+                        stat(type.stats.branchesTotal, type.stats.branchesCovered),
+                        stat(type.stats.fieldsTotal, type.stats.fieldsCovered),
+                    ]));
                 }
-                moduleIndex.push("</ul>");
+                moduleIndex.push("</table>");
                 sys.io.File.saveContent('$outDir/$packDir/${module.name}/index.html', moduleIndex.join("\n"));
 
-                if (firstType != null && module.types.length == 1) {
-                    packIndex.push("\t<li>" + link('${module.name}/$firstType.html', module.name));
-                } else {
-                    packIndex.push("\t<li>" + link('${module.name}/index.html', module.name));
-                }
+                packIndex.push(tr([
+                    if (firstType != null && module.types.length == 1)
+                        link('${module.name}/$firstType.html', module.name)
+                    else
+                        link('${module.name}/index.html', module.name),
+                    stat(module.stats.statementsTotal, module.stats.statementsCovered),
+                    stat(module.stats.branchesTotal, module.stats.branchesCovered),
+                    stat(module.stats.fieldsTotal, module.stats.fieldsCovered),
+                ]));
+
             }
-            packIndex.push("</ul>");
+            packIndex.push("</table>");
             sys.io.File.saveContent('$outDir/$packDir/index.html', packIndex.join("\n"));
 
-            index.push("\t<li>" + link('$packDir/index.html', if (dotPath == "") "<root package>" else dotPath));
+            index.push(tr([
+                link('$packDir/index.html', if (dotPath == "") "<root package>" else dotPath),
+                stat(pack.stats.statementsTotal, pack.stats.statementsCovered),
+                stat(pack.stats.branchesTotal, pack.stats.branchesCovered),
+                stat(pack.stats.fieldsTotal, pack.stats.fieldsCovered),
+            ]));
         }
-        index.push("</ul>");
+        index.push("</table>");
 
         sys.io.File.saveContent('$outDir/index.html', index.join("\n"));
     }
