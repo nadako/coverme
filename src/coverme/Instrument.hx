@@ -7,6 +7,7 @@ import haxe.macro.Type;
 using haxe.macro.ExprTools;
 
 private typedef InstrumentContext = {
+    var pos:Position;
     var packagePath:Array<String>;
     var moduleName:String;
     var typeName:String;
@@ -78,6 +79,7 @@ class Instrument {
             throw new Error('Module package ($modulePackStr) is not equal to type package ($packStr)', pos);
 
         return {
+            pos: pos,
             packagePath: pack,
             moduleName: moduleName,
             typeName: name,
@@ -185,7 +187,7 @@ class Instrument {
 
         var type = module.findType(context.typeName);
         if (type == null) {
-            type = new coverme.ModuleType(module, context.typeName);
+            type = new coverme.ModuleType(module, context.typeName, coverme.Position.fromPos(Context.getPosInfos(context.pos)));
             module.stats.typesTotal++;
             pack.stats.typesTotal++;
             coverage.stats.typesTotal++;

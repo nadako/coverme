@@ -1,6 +1,5 @@
 @:build(coverme.Instrument.build())
 class C {
-    function new () {}
 }
 
 @:build(coverme.Instrument.build())

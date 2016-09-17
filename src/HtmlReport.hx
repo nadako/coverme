@@ -159,6 +159,8 @@ class HtmlReport {
             return data;
         }
 
+        getFileData(type.pos.file);
+
         for (field in type.fields) {
             getFileData(field.pos.file).fields.push(field);
             for (branch in field.branches)
@@ -171,6 +173,10 @@ class HtmlReport {
 <script src="../../highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 <style>
+.type {
+    background-color: lightgray;
+}
+
 .missing {
     background-color: #fc8c84;
 }
@@ -202,6 +208,9 @@ class HtmlReport {
             }
 
             var fileData = files[file];
+
+            insert(type.pos.min, '<span class="type" title="current type">');
+            insert(type.pos.max, '</span>');
 
             for (field in fileData.fields) {
                 if (field.count == 0)
