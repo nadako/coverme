@@ -1,0 +1,90 @@
+<h1>Type: C (Main)</h1>
+<a href="./index.html">go up</a>
+<table border>
+<tr>
+<th>statements</th>
+<th>branches</th>
+<th>fields</th>
+</tr>
+<tr>
+<td>0% (0 / 0)</td>
+<td>0% (0 / 0)</td>
+<td>0% (0 / 0)</td>
+</tr>
+</table>
+<link rel="stylesheet" href="../../github.css">
+<script src="../../highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<style>
+.type {
+    background-color: lightgray;
+}
+
+.missing {
+    background-color: #fc8c84;
+}
+
+.missing:hover, .covered:hover {
+    background-color: #ffe87c;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+}
+</style>
+<h2>source file: src/Main.hx</h2>
+<pre><code>
+@:build(coverme.Instrument.build())
+<span class="type" title="current type">class C {
+}</span>
+
+@:build(coverme.Instrument.build())
+class CoverTest {
+    var a = {};
+    var b = {
+        {};
+    };
+    var c(default,never) = {
+        if (Math.random() &gt; 0.5 ? false : true)
+            trace(&quot;hi&quot;);
+        5;
+    };
+
+    public function new() {}
+
+    public function f(a:Int) {
+        if (a &gt; 10) {
+            trace(&quot;hi!&quot;);
+            return;
+            trace(&quot;unreachable&quot;);
+        } else {
+            trace(&quot;bye!&quot;);
+        }
+        trace(&quot;still here&quot;);
+    }
+
+    public function f2(v:Int):String {
+        return switch (v) {
+            case 1: &quot;one&quot;;
+            case 2: &quot;two&quot;;
+            default: &quot;other&quot;;
+        }
+    }
+}
+
+class Main {
+    static function main() {
+        var c = new CoverTest();
+        // var c = new CoverTest();
+        c.f(15);
+        c.f(10);
+
+        var i:pack.MyInt = 10;
+        i.times(function() {});
+
+        // ---
+
+        var coverage = coverme.Logger.instance.getCoverage();
+        HtmlReport.report(coverage, &quot;coverage&quot;);
+    }
+}
+
+</code></pre>

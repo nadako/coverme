@@ -1,0 +1,45 @@
+<h1>Type: MyInt (pack.MyInt)</h1>
+<a href="./index.html">go up</a>
+<table border>
+<tr>
+<th>statements</th>
+<th>branches</th>
+<th>fields</th>
+</tr>
+<tr>
+<td>100% (2 / 2)</td>
+<td>0% (0 / 0)</td>
+<td>100% (1 / 1)</td>
+</tr>
+</table>
+<link rel="stylesheet" href="../../github.css">
+<script src="../../highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<style>
+.type {
+    background-color: lightgray;
+}
+
+.missing {
+    background-color: #fc8c84;
+}
+
+.missing:hover, .covered:hover {
+    background-color: #ffe87c;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+}
+</style>
+<h2>source file: src/pack/MyInt.hx</h2>
+<pre><code>
+package pack;
+
+@:build(coverme.Instrument.build())
+<span class="type" title="current type">abstract MyInt(Int) from Int {
+    public inline <span class="covered" title="field evaluated 1 times">function times(fn:Void-&gt;Void) {
+        <span class="covered" title="statement evaluated 1 times">for (_ in 0...this)
+            <span class="covered" title="statement evaluated 10 times">fn()</span></span>;
+    }</span>
+}</span>
+
+</code></pre>
